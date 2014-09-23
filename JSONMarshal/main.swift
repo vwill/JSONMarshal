@@ -8,5 +8,14 @@
 
 import Foundation
 
-println("Hello, World!")
+func printRec(record: Location) {
+  println("\(record.name); \(record.address); \(record.longitude); \(record.latitude); \(record.isBusiness)")
+}
+
+let jsonData = NSData(contentsOfFile: "/Users/VW/Desktop/JSONMarshal/feed.json")
+
+let viewData = json.unMarshal(marshalClass: Location.self, data: jsonData)
+for i in viewData {
+  printRec(i as Location)
+}
 

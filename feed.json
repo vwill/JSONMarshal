@@ -1,0 +1,34 @@
+ [
+  {
+  "Latitude" : "-25.704167",
+  "Address" : "Rustenburg",
+  "Name" : "Waterfall Mall",
+  "Longitude" : "27.254333",
+  "idLocations" : "1",
+  "isBusiness" : "1"
+  },
+  {
+  "Latitude" : "-25.715917",
+  "Address" : "Rustenburg",
+  "Name" : "Stand J34, Plot 305, Waterkloof",
+  "Longitude" : "27.272991",
+  "idLocations" : "2",
+  "isBusiness" : "0"
+  },
+  {
+  "Latitude" : "-24.654123",
+  "Address" : "Rustenburg",
+  "Name" : "Stand J34B, Plot 305, Waterkloof",
+  "Longitude" : null,
+  "idLocations" : "3",
+  "isBusiness" : "0"
+  },
+  {
+  "Latitude" : "-23.124322",
+  "Address" : "Rustenburg",
+  "Name" : null,
+  "Longitude" : "23.543323",
+  "idLocations" : "4",
+  "isBusiness" : null
+  }
+  ]
