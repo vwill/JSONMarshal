@@ -10,6 +10,14 @@ import Foundation
 import Swift
 
 class json {
+   /**  Property types.
+  
+  - String, Double, Int, Bool: Standard Swift Types
+  - None: Unclassified or Unknown type
+  */
+  private enum PropertyType {
+    case String, Double, Int, Bool, None
+  }
   
   /** Unmarshal parses the JSON-encoded data and stores the result in an array of a nominated class
   
