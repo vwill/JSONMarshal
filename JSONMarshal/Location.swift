@@ -23,7 +23,7 @@ import Foundation
     self.isBusiness = isBusiness
   }
   
-  /** Added for reflect -- possibly not needed??
+  /** Added for reflect -- possibly not needed?? or alternatively workaround required. Probably can be avoided if inout param is used (as opposed to the current Class reference), similar to Go's Marshal function.
   */
   override convenience init () {
     self.init(latitude: 0.0, longitude: 0.0, name: "", address: "", isBusiness: false)
