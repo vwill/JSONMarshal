@@ -25,14 +25,12 @@ class json {
   class func unMarshal(#marshalClass: NSObject.Type, data: NSData) -> NSMutableArray {
     
     let result = NSMutableArray()
-    
-    // Parse the JSON that came in
     var error = NSError?()
     
     let jsonAnyObject: AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(0), error: &error)
     
     let newMarshalClassMirror = reflect(marshalClass())
-    let propertyTypes: [String: Any.Type] = reflectPropertyTypes(newMarshalClassMirror)
+    let propertyAttributes = reflectPropertyAttributes(newMarshalClassMirror)
     
     if let json = jsonAnyObject as? Array<Dictionary<String, AnyObject>> {
       
@@ -40,7 +38,7 @@ class json {
         let newMarshalClass = marshalClass()
         
         for (key: String, value: AnyObject) in row {
-          if let propertyType: Any.Type = propertyTypes[key.uppercaseString] {
+          if let propertyType: Any.Type = propertyAttributes[key.uppercaseString] {
             switch propertyType {
             case is Double.Type:
               if let doubleValue = jsonToDouble(value) {
@@ -64,9 +62,7 @@ class json {
           }
         }
         
-        // Add this question to the locations array
         result.addObject(newMarshalClass)
-        
       }
     }
     return result
@@ -104,7 +100,7 @@ class json {
     }
   }
   
-  private class func reflectPropertyTypes(mirrorType: MirrorType) -> [String: Any.Type] {
+  private class func reflectPropertyAttributes(mirrorType: MirrorType) -> [String: Any.Type] {
     var result = [String: Any.Type]()
     for var index = 0; index < mirrorType.count; ++index {
       result[mirrorType[index].0.uppercaseString] = mirrorType[index].1.valueType
