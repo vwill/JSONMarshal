@@ -9,6 +9,8 @@
 import Foundation
 
 public class Marshal {
+  /** Repository of Reflected Classes
+  */
   internal class Repository {
     var classes = [Class]()
     
@@ -25,6 +27,8 @@ public class Marshal {
     }
   }
   
+  /** Storage for a Reflected Class and Relevant Attributes
+  */
   internal class Class {
     let name: String
     let type: Any
@@ -45,6 +49,8 @@ public class Marshal {
     }
   }
   
+  /** Storage for Reflected Properties and Relevant Attributes
+  */
   internal class Property {
     let name: String
     let disposition: Marshal.Reflection.Disposition
