@@ -9,14 +9,9 @@
 import Foundation
 import Swift
 
-class json {
+class Json {
 
   /** Unmarshal parses the JSON-encoded data and stores the result in an array of a nominated class
-  
-  Excerpt from Go:
-  Unmarshal uses the inverse of the encodings that Marshal uses, allocating maps, slices, and pointers as necessary, with the following additional rules:
-  1. To unmarshal JSON into a pointer, Unmarshal first handles the case of the JSON being the JSON literal null. In that case, Unmarshal sets the pointer to nil. Otherwise, Unmarshal unmarshals the JSON into the value pointed at by the pointer. If the pointer is nil, Unmarshal allocates a new value for it to point to.
-  2. To unmarshal JSON into a struct, Unmarshal matches incoming object keys to the keys used by Marshal (either the struct field name or its tag), preferring an exact match but also accepting a case-insensitive match.
   
   :marshalClass: nominated class structure to parse JSON data into
   :data: NSData byte buffer containing unparsed JSON
@@ -38,22 +33,28 @@ class json {
         let newMarshalClass = marshalClass()
         
         for (key: String, value: AnyObject) in row {
+//          if let jValue: String = value as? String {
+//            println("Inside \(key): \(jValue)")
+//          } else {
+//            println("Inside \(key): nil")
+//          }
+
           if let propertyType: Any.Type = propertyAttributes[key.uppercaseString] {
             switch propertyType {
             case is Double.Type:
-              if let doubleValue = jsonToDouble(value) {
+              if let doubleValue = toDouble(value) {
                 newMarshalClass.setValue(doubleValue, forKey: key)
               }
             case is Int.Type:
-              if let intValue = jsonToInt(value) {
+              if let intValue = toInt(value) {
                 newMarshalClass.setValue(intValue, forKey: key)
               }
             case is String.Type:
-              if let stringValue = jsonToString(value) {
+              if let stringValue = toString(value) {
                 newMarshalClass.setValue(stringValue, forKey: key)
               }
             case is Bool.Type:
-              if let boolValue = jsonToBool(value) {
+              if let boolValue = toBool(value) {
                 newMarshalClass.setValue(boolValue, forKey: key)
               }
             default:
@@ -68,7 +69,85 @@ class json {
     return result
   }
 
-  private class func jsonToDouble(value: AnyObject) -> Double? {
+  class func reflectClassAttributes(mirrorType: MirrorType) -> [String: AnyObject] {
+    var result = [String: AnyObject]()
+    for var index = 0; index < mirrorType.count; ++index {
+      let (propertyName, childMirror) = mirrorType[index]
+      var colType = [String: Any.Type]()
+      colType[propertyName.uppercaseString] = childMirror.valueType
+      if let cType: Any.Type = colType[propertyName.uppercaseString] {
+        switch cType {
+        case is Array<Int>.Type:
+          println("\(propertyName) -> Array type")
+        default:
+          println("\(propertyName) -> non collection type")
+        }
+      }
+    }
+    return result
+  }
+  
+  class func reflectPropertyAttributes(mirrorType: MirrorType) -> [String: Any.Type] {
+    var result = [String: Any.Type]()
+    for var index = 0; index < mirrorType.count; ++index {
+      let (propertyName, childMirror) = mirrorType[index]
+      result[propertyName.uppercaseString] = childMirror.valueType
+//      println("Property: \(propertyName.uppercaseString)")
+    }
+    return result
+  }
+  
+  
+  /**
+  Arrays : Class or Struct
+  */
+  
+
+}
+
+class JsonValue: Any {
+  
+}
+
+extension JsonValue {
+  
+  var doubleValue: Double? {
+    if let result = (self as AnyObject).doubleValue {
+      return result
+    } else {
+      return nil
+    }
+  }
+  
+  var integerValue: Int? {
+    if let result = (self as AnyObject).integerValue {
+      return result
+    } else {
+      return nil
+    }
+  }
+  
+  var stringValue: String? {
+    if let result = (self as AnyObject).stringValue  {
+      return result
+    } else {
+      return nil
+    }
+  }
+  
+  var boolValue: Bool? {
+    if let result = (self as AnyObject).integerValue?.boolValue() {
+      return result
+    } else {
+      return nil
+    }
+  }
+}
+
+
+
+extension Json {
+  private class func toDouble(value: AnyObject) -> Double? {
     if let result = value.doubleValue {
       return result
     } else {
@@ -76,7 +155,7 @@ class json {
     }
   }
   
-  private class func jsonToInt(value: AnyObject) -> Int? {
+  private class func toInt(value: AnyObject) -> Int? {
     if let result = value.integerValue {
       return result
     } else {
@@ -84,7 +163,7 @@ class json {
     }
   }
   
-  private class func jsonToString(value: AnyObject) -> String? {
+  private class func toString(value: AnyObject) -> String? {
     if let result = value as? String {
       return result
     } else {
@@ -92,7 +171,7 @@ class json {
     }
   }
   
-  private class func jsonToBool(value: AnyObject) -> Bool? {
+  private class func toBool(value: AnyObject) -> Bool? {
     if let result = value.integerValue?.boolValue() {
       return result
     } else {
@@ -100,13 +179,6 @@ class json {
     }
   }
   
-  private class func reflectPropertyAttributes(mirrorType: MirrorType) -> [String: Any.Type] {
-    var result = [String: Any.Type]()
-    for var index = 0; index < mirrorType.count; ++index {
-      result[mirrorType[index].0.uppercaseString] = mirrorType[index].1.valueType
-    }
-    return result
-  }
 }
 
 extension Int {

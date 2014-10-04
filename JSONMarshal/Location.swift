@@ -9,13 +9,13 @@
 import Foundation
 
 @objc(Location) class Location: NSObject {
-  var latitude: Double
-  var longitude: Double
   var name: String
   var address: String
+  var latitude: Double
+  var longitude: Double
   var isBusiness: Bool
   
-  init (latitude: Double, longitude: Double, name: String, address: String, isBusiness: Bool) {
+  init (name: String, address: String, latitude: Double, longitude: Double, isBusiness: Bool) {
     self.latitude = latitude
     self.longitude = longitude
     self.name = name
@@ -23,10 +23,16 @@ import Foundation
     self.isBusiness = isBusiness
   }
   
-  /** Added for reflect -- possibly not needed?? or alternatively workaround required. Probably can be avoided if inout param is used (as opposed to the current Class reference), similar to Go's Marshal function.
-  */
-  override convenience init () {
-    self.init(latitude: 0.0, longitude: 0.0, name: "", address: "", isBusiness: false)
+  // Added for reflect
+override convenience init () {
+    self.init(name: "", address: "", latitude: 0.0, longitude: 0.0, isBusiness: false)
   }
 }
- 
+
+class LocationRepository {
+  var locations: [Location] = []
+  
+  func add(location: Location) {
+    locations.append(location)
+  }
+}
